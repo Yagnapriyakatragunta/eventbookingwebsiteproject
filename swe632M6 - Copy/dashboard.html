@@ -1,0 +1,52 @@
+<!-- dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Event Ticket Booking</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>EVENT TICKET BOOKING</h1>
+        <nav>
+            <a href="dashboard.html">Home</a>
+            <a href="events.html">Events</a>
+            <a href="contact.html">Contact Us</a>
+            
+            <a href="logout.html">Logout</a>
+        </nav>
+    </header>
+    
+    <main>
+        <section>
+            <h2>Upcoming Events</h2>
+            <p>Here you can find the latest events and manage your bookings.</p>
+            <button onclick="viewEvents()">View Events</button>
+            <button onclick="window.location.href='booked.html'">View Booked Tickets</button>
+        </section>
+    </main>
+    
+    <script>
+        function viewEvents() {
+            window.location.href = "events.html";
+        }
+
+        // Ensure booked tickets reflect in view tickets
+        document.addEventListener("DOMContentLoaded", function () {
+            let bookedTickets = JSON.parse(localStorage.getItem("bookedTickets")) || [];
+            let events = JSON.parse(localStorage.getItem("events")) || [];
+            
+            bookedTickets.forEach(booked => {
+                let event = events.find(e => e.id === booked.id);
+                if (event) {
+                    event.tickets -= 1; // Reduce available tickets
+                }
+            });
+            
+            localStorage.setItem("events", JSON.stringify(events));
+        });
+    </script>
+</body>
+</html>

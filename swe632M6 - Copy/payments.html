@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Page</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav>
+        <ul>
+            <a href="index.html">Home</a>
+            <a href="events.html">Events</a>
+            <a href="contact.html">Contact Us</a>
+            <a href="logout.html">Logout</a>
+           
+        </ul>
+    </nav>
+    
+    <section id="payment-page">
+        <h2>Make a Payment</h2>
+        <form id="payment-form">
+            <label for="card-number">Card Number:</label>
+            <input type="text" id="card-number" maxlength="16" required>
+            <small id="card-error" class="error-message"></small>
+            
+            <label for="expiry">Expiry Date (MM/YYYY):</label>
+            <input type="text" id="expiry" placeholder="MM/YYYY" required>
+            <small id="expiry-error" class="error-message"></small>
+            
+            <label for="cvv">CVV:</label>
+            <input type="text" id="cvv" maxlength="3" required>
+            <small id="cvv-error" class="error-message"></small>
+            
+            <button type="submit">Pay Now</button>
+        </form>
+    </section>
+    
+    <script>
+        function validateInput(input, pattern, errorElement, errorMessage) {
+            input.addEventListener("input", function () {
+                if (!pattern.test(input.value)) {
+                    errorElement.textContent = errorMessage;
+                } else {
+                    errorElement.textContent = "";
+                }
+            });
+        }
+        
+        document.addEventListener("DOMContentLoaded", function() {
+            let cardNumber = document.getElementById('card-number');
+            let expiryDate = document.getElementById('expiry');
+            let cvv = document.getElementById('cvv');
+            
+            validateInput(cardNumber, /^\d{16}$/, document.getElementById('card-error'), "Invalid card number. Must be exactly 16 digits.");
+            validateInput(cvv, /^\d{3}$/, document.getElementById('cvv-error'), "Invalid CVV. Must be exactly 3 digits.");
+            
+            expiryDate.addEventListener("input", function() {
+                let expiryPattern = /^(0[1-9]|1[0-2])\/(\d{4})$/;
+                let errorElement = document.getElementById('expiry-error');
+                
+                if (!expiryPattern.test(expiryDate.value)) {
+                    errorElement.textContent = "Invalid expiry date. Use MM/YYYY format.";
+                } else {
+                    let today = new Date();
+                    let currentYear = today.getFullYear();
+                    let currentMonth = today.getMonth() + 1;
+                    
+                    let [month, year] = expiryDate.value.split('/').map(num => parseInt(num, 10));
+                    
+                    if (month < 1 || month > 12) {
+                        errorElement.textContent = "Invalid month. Must be between 01 and 12.";
+                    } else if (year < 2024) {
+                        errorElement.textContent = "Card expiry year must be 2024 or later.";
+                    } else if (year === currentYear && month < currentMonth) {
+                        errorElement.textContent = "Card expired. Enter a future date.";
+                    } else {
+                        errorElement.textContent = "";
+                    }
+                }
+            });
+        });
+        
+        document.getElementById('payment-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            let cardNumber = document.getElementById('card-number').value.trim();
+            let expiryDate = document.getElementById('expiry').value.trim();
+            let cvv = document.getElementById('cvv').value.trim();
+            let isValid = true;
+            
+            if (document.getElementById('card-error').textContent ||
+                document.getElementById('expiry-error').textContent ||
+                document.getElementById('cvv-error').textContent) {
+                isValid = false;
+            }
+            
+            if (isValid) {
+                window.location.href = 'confirmation.html';
+            }
+        });
+    </script>
+</body>
+</html>

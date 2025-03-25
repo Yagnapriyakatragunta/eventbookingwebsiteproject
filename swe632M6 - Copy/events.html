@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events - Event Ticket Booking</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Event Listings</h1>
+        <nav>
+            <a href="dashboard.html">Home</a>
+            <a href="contact.html">Contact Us</a>
+            <a href="logout.html">Logout</a>
+        </nav>
+    </header>
+    
+    <main>
+        <div>
+            <input type="text" id="searchBar" placeholder="Search Events">
+            <button onclick="searchEvents()">Search</button>
+
+            <select id="eventTypeFilter" onchange="filterEvents()">
+                <option value="">Select Event Type</option>
+                <option value="Music / Concert">Music / Concert</option>
+                <option value="Technology / Conference">Technology / Conference</option>
+                <option value="Entertainment / Comedy">Entertainment / Comedy</option>
+                <option value="Food / Festival">Food / Festival</option>
+                <option value="Sports">Sports</option>
+                <option value="Art / Exhibition">Art / Exhibition</option>
+            </select>
+
+            <select id="locationFilter" onchange="filterEvents()">
+                <option value="">Select Location</option>
+                <option value="New York City">New York City</option>
+                <option value="San Francisco">San Francisco</option>
+                <option value="Los Angeles">Los Angeles</option>
+                <option value="Chicago">Chicago</option>
+                <option value="Miami">Miami</option>
+                <option value="Seattle">Seattle</option>
+                <option value="Boston">Boston</option>
+                <option value="Austin">Austin</option>
+                <option value="Hollywood">Hollywood</option>
+                <option value="Las Vegas">Las Vegas</option>
+            </select>
+        </div>
+
+        <section id="event-list">
+            <!-- Events will be populated dynamically -->
+        </section>
+    </main>
+
+    <script>
+        const events = [
+            { id: 1, name: "Concert Night", date: "2025-03-15", time: "7:00 PM - 10:00 PM", location: "New York City (EST)", category: "Music / Concert", price: 50,tickets: 150, rescheduleDates: ["2025-03-20", "2025-03-25"] },
+            { id: 2, name: "Tech Conference", date: "2025-04-10", time: "9:00 AM - 5:00 PM", location: "San Francisco (PST)", category: "Technology / Conference", price: 150,tickets: 129, rescheduleDates: ["2025-04-15", "2025-04-20"] },
+            { id: 3, name: "Comedy Show", date: "2025-05-20", time: "8:00 PM - 11:00 PM", location: "Los Angeles (PST)", category: "Entertainment / Comedy",  price: 75,tickets: 80, rescheduleDates: ["2025-05-25", "2025-05-30"] },
+            { id: 4, name: "Food Festival", date: "2025-06-10", time: "12:00 PM - 6:00 PM", location: "Chicago (CST)", category: "Food / Festival",  price: 40,tickets: 90, rescheduleDates: ["2025-06-15", "2025-06-20"] },
+            { id: 5, name: "Sports Championship", date: "2025-07-05", time: "3:00 PM - 7:00 PM", location: "Miami (EST)", category: "Sports", price: 100,tickets: 75, rescheduleDates: ["2025-07-10", "2025-07-15"] },
+            { id: 6, name: "Art Exhibition", date: "2025-08-12", time: "10:00 AM - 4:00 PM", location: "Seattle (PST)", category: "Art / Exhibition",  price: 30,tickets: 80, rescheduleDates: ["2025-08-18", "2025-08-25"] },
+            { id: 7, name: "Book Fair", date: "2025-09-20", time: "11:00 AM - 5:00 PM", location: "Boston (EST)", category: "Entertainment / Comedy",  price: 20,tickets: 60, rescheduleDates: ["2025-09-25", "2025-09-30"] },
+            { id: 8, name: "Music Festival", date: "2025-10-05", time: "2:00 PM - 10:00 PM", location: "Austin (CST)", category: "Music / Concert", price: 80,tickets: 56, rescheduleDates: ["2025-10-10", "2025-10-15"] },
+            { id: 9, name: "Film Premiere", date: "2025-11-15", time: "6:00 PM - 9:00 PM", location: "Hollywood (PST)", category: "Entertainment / Comedy",price: 60,tickets: 40, rescheduleDates: ["2025-11-20", "2025-11-25"] },
+            { id: 10, name: "Charity Gala", date: "2025-12-01", time: "7:00 PM - 11:00 PM", location: "Washington D.C. (EST)", category: "Technology / Conference", price: 200,tickets: 50, rescheduleDates: ["2025-12-05", "2025-12-10"] }
+        ];
+
+        function renderEvents(eventList = events) {
+            const eventContainer = document.getElementById('event-list');
+            eventContainer.innerHTML = '';
+        
+            eventList.forEach(event => {
+                const eventItem = document.createElement('div');
+                eventItem.innerHTML = `
+                    <h2>${event.name}</h2>
+                    <p><strong>Date:</strong> ${event.date}</p>
+                    <p><strong>Time:</strong> ${event.time}</p>
+                    <p><strong>Location:</strong> ${event.location}</p>
+                    <p><strong>Category:</strong> ${event.category}</p>
+                    <p><strong>Price:</strong> $${event.price} per ticket</p>
+                    <p><strong>Available Tickets:</strong> <span id="tickets-${event.id}">${event.tickets}</span></p>
+        
+                    <label for="quantity-${event.id}"><strong>Select Tickets:</strong></label>
+                    <input type="number" id="quantity-${event.id}" min="1" max="${event.tickets}" value="1">
+                    
+                    <p><strong>Total:</strong> $<span id="total-${event.id}">${event.price.toFixed(2)}</span></p>
+        
+                    <button onclick="bookTicket(${event.id})">Book Now</button>
+                    <button onclick="toggleReschedule(${event.id})">Reschedule Ticket</button>
+        
+                    <div id="reschedule-options-${event.id}" style="display: none;">
+                        <label for="reschedule-${event.id}"><strong>Select a new date:</strong></label>
+                        <select id="reschedule-${event.id}">
+                            ${event.rescheduleDates.map(date => `<option value="${date}">${date}</option>`).join("")}
+                        </select>
+                        <button onclick="confirmReschedule(${event.id})">Confirm</button>
+                    </div>
+                `;
+                eventContainer.appendChild(eventItem);
+        
+                // Update total price dynamically
+                document.getElementById(`quantity-${event.id}`).addEventListener('input', function () {
+                    let quantity = parseInt(this.value, 10);
+                    if (isNaN(quantity) || quantity < 1) quantity = 1;
+                    let price = parseFloat(event.price);
+                    document.getElementById(`total-${event.id}`).textContent = `$${(price * quantity).toFixed(2)}`;
+                });
+            });
+        }
+        
+        
+
+        function bookTicket(eventId) {
+            let selectedEvent = events.find(event => event.id == eventId);
+        
+            if (!selectedEvent) {
+                alert("Event not found.");
+                return;
+            }
+        
+            // Store full event details in localStorage
+            localStorage.setItem("selectedEvent", JSON.stringify(selectedEvent));
+        
+            // Redirect to checkout page
+            window.location.href = "checkout.html";
+        }
+        
+        
+        
+
+        function toggleReschedule(eventId) {
+            let rescheduleDiv = document.getElementById(`reschedule-options-${eventId}`);
+            rescheduleDiv.style.display = (rescheduleDiv.style.display === "block") ? "none" : "block";
+        }
+
+        function confirmReschedule(eventId) {
+            let newDate = document.getElementById(`reschedule-${eventId}`).value;
+            alert(`Your ticket for Event ID ${eventId} has been rescheduled to ${newDate}.`);
+        }
+
+        function searchEvents() {
+            let query = document.getElementById("searchBar").value.toLowerCase();
+            let filteredEvents = events.filter(event => event.name.toLowerCase().includes(query));
+            renderEvents(filteredEvents);
+        }
+
+        function filterEvents() {
+            let selectedType = document.getElementById("eventTypeFilter").value;
+            let selectedLocation = document.getElementById("locationFilter").value;
+
+            let filteredEvents = events.filter(event => {
+                let matchesType = selectedType ? event.category === selectedType : true;
+                let matchesLocation = selectedLocation ? event.location.includes(selectedLocation) : true;
+                return matchesType && matchesLocation;
+            });
+
+            renderEvents(filteredEvents);
+        }
+
+        window.onload = function () {
+            renderEvents();
+        };
+    </script>
+</body>
+</html>
+

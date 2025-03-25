@@ -1,0 +1,57 @@
+<!-- final.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Ticket Details</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Final Ticket Details</h1>
+        <nav>
+            <a href="dashboard.html">Home</a>
+            <a href="events.html">Events</a>
+            <a href="contact.html">Contact Us</a>
+            <a href="logout.html">Logout</a>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="final-ticket-section">
+            <h2>Your Ticket Details</h2>
+            <ul id="final-ticket-list"></ul>
+            <p id="no-tickets-message" style="display: none;">You have no booked tickets.</p>
+        </section>
+        <button onclick="window.location.href='dashboard.html'">Back to Dashboard</button>
+    </main>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let bookedTickets = JSON.parse(localStorage.getItem("bookedTickets")) || [];
+            let finalTicketList = document.getElementById("final-ticket-list");
+            let noTicketsMessage = document.getElementById("no-tickets-message");
+        
+            finalTicketList.innerHTML = ""; // Clear previous content
+        
+            if (bookedTickets.length === 0) {
+                noTicketsMessage.style.display = "block";
+            } else {
+                noTicketsMessage.style.display = "none";
+                bookedTickets.forEach(ticket => {
+                    let li = document.createElement("li");
+                    li.innerHTML = `
+                        <strong>Event:</strong> ${ticket.name} <br> 
+                        <strong>Date:</strong> ${ticket.date} <br> 
+                        <strong>Location:</strong> ${ticket.location} <br> 
+                        <strong>Price:</strong> ${ticket.price}
+                    `;
+                    finalTicketList.appendChild(li);
+                });
+            }
+        });
+        
+    </script>
+</body>
+</html>

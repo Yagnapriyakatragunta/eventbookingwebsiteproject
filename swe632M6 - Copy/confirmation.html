@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Confirmation</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav>
+        <ul>
+            <a href="dashboard.html">Home</a>
+            <a href="events.html">Events</a>
+            <a href="contact.html">Contact Us</a>
+            <a href="logout.html">Logout</a>
+            
+        </ul>
+    </nav>
+
+    <section id="confirmation-page">
+        <h2>Ticket Booking Successful</h2>
+        <p>Thank you for booking your tickets! Your confirmation details are below:</p>
+        <p><strong>Event:</strong> <span id="event-name">Concert</span></p>
+        <p><strong>Date:</strong> <span id="event-date">March 5, 2025</span></p>
+        <p><strong>Amount Paid:</strong> <span id="amount">$100</span></p>
+        <button onclick="window.location.href='dashboard.html'">Return to Home</button>
+    </section>
+</body>
+</html>

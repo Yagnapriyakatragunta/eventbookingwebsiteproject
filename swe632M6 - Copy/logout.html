@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logout - Event Ticket Booking</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Logout</h1>
+    </header>
+    
+    <main>
+        <section id="logout-section">
+            <h2>You have been logged out.</h2>
+            <p>Thank you for using Event Ticket Booking. Click below to log in again.</p>
+            <a href="index.html"><button>Login Again</button></a>
+        </section>
+    </main>
+    
+    <script>
+        // Simulating logout action
+        document.addEventListener("DOMContentLoaded", () => {
+            alert("You have been logged out successfully!");
+            // Clearing session storage or user data if needed
+            sessionStorage.clear();
+            localStorage.removeItem("userLoggedIn");
+        });
+    </script>
+</body>
+</html>
